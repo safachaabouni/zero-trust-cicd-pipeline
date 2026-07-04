@@ -17,8 +17,7 @@ jobs:
           # CRITIQUE : Sans ce "0", Git ne télécharge que le dernier commit !
           fetch-depth: 0
 
-      - name: Scan de tout l'historique avec Gitleaks
-        # On utilise une commande bash pour appeler Docker directement
+      - name: Scan de tout l'historique avec Gitleaks (Règles Custom)
         run: |
-          echo "Lancement de l'audit complet (Mode Detect)..."
-          docker run --rm -v ${{ github.workspace }}:/code zricethezav/gitleaks:latest detect --source="/code" -v
+          echo "Lancement de l'audit avec notre fichier gitleaks.toml..."
+          docker run --rm -v ${{ github.workspace }}:/code zricethezav/gitleaks:latest detect --source="/code" -c="/code/gitleaks.toml" -v
