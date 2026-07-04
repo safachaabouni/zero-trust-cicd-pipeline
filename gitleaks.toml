@@ -1,0 +1,12 @@
+title = "Configuration sur-mesure Gitleaks"
+
+# ----------------------------------------------------------------------
+# RÈGLE 1 : Détection des mots de passe de base de données génériques
+# ----------------------------------------------------------------------
+[[rules]]
+id = "custom-db-password-leak"
+description = "Détection d'une affectation de mot de passe en clair (ex: DB_PASSWORD = '...')"
+# L'expression régulière cherche "DB_PASSWORD" (sans tenir compte des majuscules/minuscules), 
+# suivi d'un signe "=", puis d'un texte entre guillemets.
+regex = '''(?i)(?:db_password|db_pass|database_password)\s*=\s*['"][^'"]+['"]'''
+tags = ["password", "database", "custom-rule"]
