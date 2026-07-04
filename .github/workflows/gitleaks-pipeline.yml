@@ -14,14 +14,11 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v4
         with:
-          # CRITIQUE : fetch-depth 0 permet de télécharger tout l'historique des commits.
-          # Sans cela, Gitleaks ne scannera que le dernier changement et pourrait rater des vieux secrets.
-          fetch-depth: 0
+          fetch-depth: 0 # Toujours indispensable pour avoir l'historique
 
-      - name: Détection de secrets avec Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # NOUVEAU : On force Gitleaks à scanner tout l'historique
+      # NOUVELLE ÉTAPE : Appel direct du conteneur Docker Gitleaks
+      - name: Audit complet de l'historique (Mode Detect)
+        uses: docker://zricethezav/gitleaks:latest
         with:
-          args: detect --verbose
+          # Ici, Docker accepte nos arguments et va scanner tout le dossier de travail !
+          args: detect --source /github/workspace --verbose
