@@ -21,5 +21,7 @@ jobs:
       - name: Détection de secrets avec Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
-          # Gitleaks a besoin de ce token par défaut pour interagir avec l'API GitHub
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # NOUVEAU : On force Gitleaks à scanner tout l'historique
+        with:
+          args: detect --verbose
