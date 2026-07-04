@@ -1,0 +1,25 @@
+name: Zero-Trust Secret Scanning
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  secret-scanning:
+    name: Gitleaks Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          # CRITIQUE : fetch-depth 0 permet de télécharger tout l'historique des commits.
+          # Sans cela, Gitleaks ne scannera que le dernier changement et pourrait rater des vieux secrets.
+          fetch-depth: 0
+
+      - name: Détection de secrets avec Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          # Gitleaks a besoin de ce token par défaut pour interagir avec l'API GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
