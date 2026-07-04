@@ -8,17 +8,17 @@ on:
 
 jobs:
   secret-scanning:
-    name: Gitleaks Scan
+    name: Gitleaks Full Audit
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout du code
+      - name: Checkout du code avec historique
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Toujours indispensable pour avoir l'historique
+          # CRITIQUE : Sans ce "0", Git ne télécharge que le dernier commit !
+          fetch-depth: 0
 
-      # NOUVELLE ÉTAPE : Appel direct du conteneur Docker Gitleaks
-      - name: Audit complet de l'historique (Mode Detect)
-        uses: docker://zricethezav/gitleaks:latest
-        with:
-          # Ici, Docker accepte nos arguments et va scanner tout le dossier de travail !
-          args: detect --source /github/workspace --verbose
+      - name: Scan de tout l'historique avec Gitleaks
+        # On utilise une commande bash pour appeler Docker directement
+        run: |
+          echo "Lancement de l'audit complet (Mode Detect)..."
+          docker run --rm -v ${{ github.workspace }}:/code zricethezav/gitleaks:latest detect --source="/code" -v
